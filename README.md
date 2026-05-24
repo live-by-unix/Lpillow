@@ -1,61 +1,121 @@
-# LPillow 1.0
+# LPillow — The World’s First Lossless CAM
 
-LPillow 1.0 is the world's first 0% loss CAM (Computer Audio Model).
+LPillow is a **0%‑loss Computer Audio Model (CAM)** that transforms audio files into a deterministic text format (LTF) and reconstructs them **bit‑for‑bit identical**.
 
-LPillow transforms audio files into a deterministic text-based LTF representation and reconstructs the original file BIT-FOR-BIT IDENTICAL with ZERO loss.
+Not “lossless audio.”  
+Not “sounds identical.”  
+**Lossless reality.**
 
-Supported formats:
+LPillow preserves every byte of the original file — headers, metadata, padding, container structure, everything.
 
-- WAV
-- FLAC
-- MP3
+To verify:
 
-LPillow operates at the FILE level.
+```bash
+sha256sum input.wav restored.wav
+```
 
-LPillow preserves:
+If the hashes match, LPillow reconstructed the file exactly.
 
-- all headers
-- all metadata
-- all frames
-- all chunks
-- all padding
-- all extension data
-- all raw bytes
+---
 
-0% loss means:
+## Features
 
-sha256(input) == sha256(output)
+- **0% loss** — perfect byte‑for‑byte reconstruction  
+- **Deterministic LTF format** (LPillow Text Format)  
+- **Supports WAV, FLAC, MP3**  
+- **Preserves metadata, padding, and container structure**  
+- **No re‑encoding or transcoding**  
+- **No drift, no mutation, no entropy loss**  
+- **Cross‑platform Rust CLI**
 
-for all supported formats.
+---
 
-Compress WAV:
+## Usage
 
+### Compress
+
+```bash
 lpillow compress input.wav -o song.ltf
-
-Compress FLAC:
-
 lpillow compress input.flac -o song.ltf
-
-Compress MP3:
-
 lpillow compress input.mp3 -o song.ltf
+```
 
-Unpress WAV:
+### Unpress
 
+```bash
 lpillow unpress song.ltf -o restored.wav
-
-Unpress FLAC:
-
 lpillow unpress song.ltf -o restored.flac
-
-Unpress MP3:
-
 lpillow unpress song.ltf -o restored.mp3
+```
 
-LTF format example:
+### Verify 0% Loss
 
-LP1|type=wav|length=123456
-SHA256|abcdef...
-DATA|0011223344...
+```bash
+sha256sum input.wav restored.wav
+```
 
-LPillow reconstructs the original file exactly.
+---
+
+## What Is LTF?
+
+LTF (LPillow Text Format) is a reversible, line‑based text representation of the original audio file.
+
+It stores:
+
+- file type  
+- file length  
+- raw bytes (hex or base64)
+
+Nothing is changed.  
+Nothing is approximated.  
+Nothing is lost.
+
+---
+
+## Why LPillow?
+
+Traditional audio formats preserve *sound*.  
+LPillow preserves **the file itself**.
+
+This makes LPillow the first true **Lossless CAM** — a reversible representation of audio containers, metadata, and binary structure.
+
+---
+
+## Build
+
+```bash
+cargo build --release
+```
+
+Binary output:
+
+```
+target/release/lpillow
+```
+
+--- 
+
+## Project Structure
+
+```
+lpillow/
+ ├── Cargo.toml
+ ├── README.md
+ ├── .gitignore
+ └── src/
+     ├── main.rs
+     ├── cli.rs
+     ├── compress.rs
+     ├── unpress.rs
+     ├── ltf.rs
+     ├── utils.rs
+     ├── wav.rs
+     ├── flac.rs
+     └── mp3.rs
+```
+
+---
+
+## License
+
+BSD-3.0 License.
