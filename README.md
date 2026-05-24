@@ -1,46 +1,61 @@
-# LPillow 1.0.0
+# LPillow 1.0
 
-LPillow is a CAM (Computer Audio Model) audio transformer.
+LPillow 1.0 is the world's first 0% loss CAM (Computer Audio Model).
 
-LPillow converts MP3 audio into a fully textual spectral representation called LTF (LPillow Text Format), then reconstructs audio back from the text representation.
+LPillow transforms audio files into a deterministic text-based LTF representation and reconstructs the original file BIT-FOR-BIT IDENTICAL with ZERO loss.
 
-## Features
+Supported formats:
 
-- MP3 decoding
-- FFT spectral transforms
-- Fully textual frame storage
-- Deterministic reconstruction
-- Offline operation
-- Stable Rust
-- Single binary
-- No unsafe Rust
+- WAV
+- FLAC
+- MP3
 
-## Commands
+LPillow operates at the FILE level.
 
-Compress audio into LTF:
+LPillow preserves:
 
-./lpillow compress input.mp3 -o output.ltf
+- all headers
+- all metadata
+- all frames
+- all chunks
+- all padding
+- all extension data
+- all raw bytes
 
-Reconstruct audio from LTF:
+0% loss means:
 
-./lpillow unpress output.ltf -o restored.wav
+sha256(input) == sha256(output)
 
-## LTF Format
+for all supported formats.
 
-One frame per line:
+Compress WAV:
 
-LP{bin1,bin2,bin3,...;amp;phase;noise}
+lpillow compress input.wav -o song.ltf
 
-Each frequency bin stores real and imaginary spectral data.
+Compress FLAC:
 
-## Build
+lpillow compress input.flac -o song.ltf
 
-cargo build --release
+Compress MP3:
 
-## Install Binary
+lpillow compress input.mp3 -o song.ltf
 
-cp target/release/lpillow /usr/local/bin/lpillow
+Unpress WAV:
 
-## Test Audio
+lpillow unpress song.ltf -o restored.wav
 
-https://filesamples.com/samples/audio/mp3/sample3.mp3
+Unpress FLAC:
+
+lpillow unpress song.ltf -o restored.flac
+
+Unpress MP3:
+
+lpillow unpress song.ltf -o restored.mp3
+
+LTF format example:
+
+LP1|type=wav|length=123456
+SHA256|abcdef...
+DATA|0011223344...
+
+LPillow reconstructs the original file exactly.
